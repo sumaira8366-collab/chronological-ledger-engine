@@ -3,6 +3,7 @@ import json
 import sqlite3
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse # <--- Naya import
 from pydantic import BaseModel
 from typing import List
 from datetime import datetime
@@ -10,7 +11,7 @@ from openai import OpenAI
 
 app = FastAPI(title="Advanced Chronological Ledger Engine")
 
-# CORS Setup taaki frontend backend se connect ho sake
+# CORS Setup
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -19,12 +20,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# SQLite Database Setup
-DB_FILE = "ledger_data.db"
+# --- DATABASE SETUP (Railway PostgreSQL / SQLite Compatibility) ---
+# Railway automatically DATABASE_URL provide karta hai jab aap database attach karte hain
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+def get_db_connection():
+    if DATABASE_URL:
+        # Agar Railway par PostgreSQL hai (Iski zaroorat padegi, step 2 dekhein)
+        import psycopg2
+        return psycopg2.connect(DATABASE_URL)
+    else:
+        # Local testing ke liye SQLite
+        return sqlite3.connect("ledger_data.db")
 
 def init_db():
-    conn = sqlite3.connect(DB_FILE)
+    conn = get_db_connection()
     cursor = conn.cursor()
+    # SQLite aur PostgreSQL dono ke liye standard query
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS submissions (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -37,9 +49,13 @@ def init_db():
     conn.commit()
     conn.close()
 
-init_db()
+# SQLite local testing me create ho jayega, cloud par hum direct DB chalayenge
+if not DATABASE_URL:
+    init_db()
 
 openai_api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=openai_api_key)
+
 class IngestionPayload(BaseModel):
     files_count: int
     file_type: str
@@ -82,12 +98,17 @@ async def process_ledger(payload: IngestionPayload):
     if payload.files_count > 10:
         raise HTTPException(status_code=422, detail="Complexity Gate Triggered")
     
-    # Save Inputs to Database
-    conn = sqlite3.connect(DB_FILE)
+    # Database Connection Custom Method se handle hoga
+    conn = get_db_connection()
     cursor = conn.cursor()
     combined_text = " | ".join(payload.unstructured_texts)
+    
+    # Adapt placeholder for PostgreSQL (%s) vs SQLite (?) if needed, 
+    # but for simple cloud migration standard variables are adjusted.
+    placeholder = "%s" if DATABASE_URL else "?"
+    
     cursor.execute(
-        "INSERT INTO submissions (timestamp, file_type, target_threshold, raw_text) VALUES (?, ?, ?, ?)",
+        f"INSERT INTO submissions (timestamp, file_type, target_threshold, raw_text) VALUES ({placeholder}, {placeholder}, {placeholder}, {placeholder})",
         (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), payload.file_type, payload.target_threshold, combined_text)
     )
     conn.commit()
@@ -114,6 +135,16 @@ async def process_ledger(payload: IngestionPayload):
 
     return {"status": "success", "timeline": all_events}
 
-@app.get("/")
+# --- YAHAN BADLAO KIYA HAI: Purane root message ki jagah index.html return karega ---
+@app.get("/", response_class=HTMLResponse)
 def read_root():
-    return {"message": "Ledger Engine Backend with Database Running!"}
+    # Yeh check karega ki repository me jahan main.py hai, wahi index.html hai ya nahi
+    if os.path.exists("index.html"):
+        with open("index.html", "r", encoding="utf-8") as f:
+            return f.read()
+    return "<h1>Frontend index.html missing from root directory!</h1>"
+
+# Backup route agar logs fir bhi /index.html dhoondein
+@app.get("/index.html", response_class=HTMLResponse)
+def read_html_explicit():
+    return read_root()
