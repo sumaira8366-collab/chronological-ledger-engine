@@ -3,90 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Ledger Engine</title>
+    <title>VIP Fast-Track Ledger Engine</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .glass-panel {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
         }
         .card-3d {
-            transform: perspective(1000px) rotateX(2deg) rotateY(-1deg);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transform: perspective(1000px) rotateX(1deg);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .card-3d:hover {
-            transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(-4px);
-            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+            transform: perspective(1000px) rotateX(0deg) translateY(-2px);
+            box-shadow: 0 20px 40px rgba(6, 182, 212, 0.15);
         }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen relative overflow-x-hidden font-sans">
 
-    <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-600/20 rounded-full filter blur-[120px] pointer-events-none"></div>
-    <div class="absolute bottom-[10%] right-[-10%] w-[600px] h-[600px] bg-purple-600/15 rounded-full filter blur-[150px] pointer-events-none"></div>
+    <div class="absolute top-[-5%] left-[-5%] w-[400px] h-[400px] bg-cyan-500/10 rounded-full filter blur-[100px] pointer-events-none"></div>
+    <div class="absolute bottom-[5%] right-[-5%] w-[500px] h-[500px] bg-purple-500/10 rounded-full filter blur-[130px] pointer-events-none"></div>
 
-    <div class="max-w-4xl mx-auto py-12 px-4 relative z-10">
-        <div class="text-center mb-12">
-            <h1 class="text-4xl font-extrabold bg-gradient-to-r from-blue-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent tracking-tight">
-                Chronological Ledger Engine
+    <div class="max-w-5xl mx-auto py-10 px-4 relative z-10">
+        
+        <div class="text-center mb-10">
+            <h1 class="text-3xl font-black bg-gradient-to-r from-blue-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent tracking-tight">
+                VIP Fast-Track Ledger Engine
             </h1>
-            <p class="text-slate-400 mt-3 text-lg">AI-powered transactional auditing framework with spatial depth interface.</p>
+            <p class="text-slate-400 mt-2 text-sm">Advanced asynchronous parsing & sorting pipeline for audit compliance verification.</p>
         </div>
 
-        <div class="glass-panel card-3d rounded-2xl p-8 mb-10">
-            <form id="ledgerForm" class="space-y-6">
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div id="telemetryBlock" class="hidden glass-panel rounded-xl p-4 mb-6 grid grid-cols-1 md:grid-cols-2 gap-4 border border-cyan-500/20 bg-slate-900/40">
+            <div>
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 block">Total Dates Extracted</span>
+                <span id="telemetryCount" class="text-2xl font-black text-cyan-400">0</span>
+            </div>
+            <div>
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 block">Omitted Non-Compliant Fragments</span>
+                <div id="telemetryOmitted" class="text-xs text-red-400 font-mono mt-1 max-h-12 overflow-y-auto">None detected</div>
+            </div>
+        </div>
+
+        <div class="glass-panel card-3d rounded-xl p-6 mb-8">
+            <form id="ledgerForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">System Schema Vertex</label>
-                        <select id="fileType" class="w-full rounded-xl bg-slate-900/90 border border-slate-700 p-3 text-slate-200 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 outline-none transition">
-                            <option value="medical">Medical Dossier Engine</option>
-                            <option value="insurance">Insurance Subrogation Matrix</option>
-                            <option value="legal">Legal Forensics Dossier</option>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">System Schema Vertex</label>
+                        <select id="fileType" class="w-full text-sm rounded-lg bg-slate-900 border border-slate-700 p-2.5 text-slate-200 focus:border-cyan-400 outline-none">
+                            <option value="medical">Medical Files Dossier</option>
+                            <option value="insurance">Insurance Claims Matrix</option>
+                            <option value="legal">Legal Demand Forensics</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Anomaly Audit Threshold ($)</label>
-                        <input type="number" id="threshold" value="5000" class="w-full rounded-xl bg-slate-900/90 border border-slate-700 p-3 text-slate-200 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 outline-none transition">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Target Threshold Limit ($)</label>
+                        <input type="number" id="threshold" value="5000" class="w-full text-sm rounded-lg bg-slate-900 border border-slate-700 p-2.5 text-slate-200 focus:border-cyan-400 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Temporal Normalization</label>
+                        <select id="timeFormat" class="w-full text-sm rounded-lg bg-slate-900 border border-slate-700 p-2.5 text-slate-200 focus:border-cyan-400 outline-none">
+                            <option value="YYYY-MM-DD">Standardized (YYYY-MM-DD)</option>
+                        </select>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Unstructured Document Streams</label>
-                    <div id="textInputsContainer" class="space-y-3">
-                        <textarea class="document-text w-full rounded-xl bg-slate-900/90 border border-slate-700 p-4 text-slate-300 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 outline-none h-28 transition" placeholder="Inject unstructured transactional text lines here..."></textarea>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Unstructured Document Stream</label>
+                    <div id="textInputsContainer" class="space-y-2">
+                        <textarea class="document-text w-full text-sm rounded-lg bg-slate-900 border border-slate-700 p-3 text-slate-300 focus:border-cyan-400 outline-none h-20 transition" placeholder="Inject text payload segment..."></textarea>
                     </div>
-                    <button type="button" id="addTextBtn" class="mt-3 text-sm font-semibold text-cyan-400 hover:text-cyan-300 transition duration-200">+ Add Document Segment</button>
+                    <div class="flex justify-between items-center mt-2">
+                        <button type="button" id="addTextBtn" class="text-xs font-bold text-cyan-400 hover:text-cyan-300">+ Add File Segment Block</button>
+                        <span id="fileCountDisplay" class="text-xs text-slate-500 font-mono">Total Segments: 1</span>
+                    </div>
                 </div>
 
-                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 via-cyan-500 to-purple-600 hover:opacity-95 text-white font-bold py-4 rounded-xl shadow-lg shadow-cyan-500/20 transition duration-300 transform active:scale-[0.99]">
-                    Execute Reconciliation & Log Data
+                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-600 hover:opacity-95 text-white text-sm font-bold py-3 rounded-lg shadow-md transition duration-200">
+                    Execute Ingestion & Chronological Audit
                 </button>
             </form>
         </div>
 
-        <div id="resultsContainer" class="hidden glass-panel rounded-2xl p-8 border border-slate-800">
-            <h2 class="text-xl font-bold bg-gradient-to-r from-slate-100 to-slate-300 bg-clip-text text-transparent mb-8 flex items-center gap-2">
-                <span class="h-2 w-2 rounded-full bg-cyan-400 animate-pulse"></span> Reconciled Temporal Timeline
+        <div id="resultsContainer" class="hidden glass-panel rounded-xl p-6 border border-slate-800">
+            <h2 class="text-md font-bold text-slate-200 mb-4 flex items-center gap-2">
+                <span class="h-2 w-2 rounded-full bg-cyan-400 animate-pulse"></span> Reconciled Tabular Presentation Layer
             </h2>
             
-            <div id="timelineList" class="relative border-l-2 border-slate-800 ml-4 space-y-6">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-800 text-slate-400 font-bold uppercase tracking-wider">
+                            <th class="py-3 px-2">Target Date</th>
+                            <th class="py-3 px-2">Source Filename Anchor</th>
+                            <th class="py-3 px-2">Unified Event Log Description</th>
+                            <th class="py-3 px-2">Extracted Financial Metric Value</th>
+                            <th class="py-3 px-2">Custom Editable String Comments</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ledgerGridBody" class="divide-y divide-slate-900 text-slate-300">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="complexityModal" class="fixed inset-0 bg-slate-950/90 backdrop-filter blur-md hidden flex items-center justify-center z-50 p-4">
+        <div class="glass-panel max-w-lg w-full rounded-2xl p-6 border border-red-500/30 text-center space-y-4 shadow-2xl shadow-red-950/20">
+            <div class="inline-flex p-3 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 animate-bounce">
+                ⚠️ Complexity Gate Triggered
+            </div>
+            <h3 class="text-lg font-bold text-slate-100">Ingestion Pipeline Paused</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+                The uploaded payload count exceeds the limit (Files_Count > 10) or data density violates default parsing parameters. Complete the routing funnel below.
+            </p>
+            
+            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-left space-y-3">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-cyan-400">Schedule Human Recovery Audit Funnel</h4>
+                <div>
+                    <label class="block text-[10px] text-slate-500 font-bold uppercase mb-1">Select Engineering Team Slot</label>
+                    <input type="datetime-local" class="w-full text-xs bg-slate-950 border border-slate-700 rounded p-2 text-slate-200 outline-none focus:border-cyan-400">
                 </div>
+                
+                <div>
+                    <label class="block text-[10px] text-slate-500 font-bold uppercase mb-1">Target Recovery Form (Specify Omitted Fields)</label>
+                    <textarea class="w-full text-xs bg-slate-950 border border-slate-700 rounded p-2 text-slate-300 h-16 outline-none focus:border-cyan-400" placeholder="Describe the specific parameters or results required..."></textarea>
+                </div>
+            </div>
+
+            <div class="flex gap-2">
+                <button id="closeModalBtn" class="w-1/2 bg-slate-800 hover:bg-slate-700 text-xs font-bold py-2.5 rounded-lg transition">Cancel Operation</button>
+                <button onclick="alert('Funnel Submitted Successfully. A Consultant will review the payload.')" class="w-1/2 bg-gradient-to-r from-red-600 to-pink-600 hover:opacity-95 text-xs font-bold py-2.5 rounded-lg transition text-white">Submit Recovery Ticket</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // Local testing link: "http://127.0.0.1:8000"
-        const BACKEND_URL = "http://127.0.0.1:8000"; 
+        const BACKEND_URL = window.location.origin; 
+
+        function updateSegmentCount() {
+            const count = document.querySelectorAll('.document-text').length;
+            document.getElementById('fileCountDisplay').innerText = `Total Segments: ${count}`;
+        }
 
         document.getElementById('addTextBtn').addEventListener('click', () => {
             const container = document.getElementById('textInputsContainer');
             const textarea = document.createElement('textarea');
-            textarea.className = "document-text w-full rounded-xl bg-slate-900/90 border border-slate-700 p-4 text-slate-300 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 outline-none h-28 mt-3 transition";
-            textarea.placeholder = "Inject additional unstructured segment...";
+            textarea.className = "document-text w-full text-sm rounded-lg bg-slate-900 border border-slate-700 p-3 text-slate-300 focus:border-cyan-400 outline-none h-20 transition mt-2";
+            textarea.placeholder = "Inject additional unstructured text payload segment...";
             container.appendChild(textarea);
+            updateSegmentCount();
         });
 
         document.getElementById('ledgerForm').addEventListener('submit', async (e) => {
@@ -95,6 +163,12 @@
             const threshold = parseFloat(document.getElementById('threshold').value);
             const textareas = document.querySelectorAll('.document-text');
             const unstructuredTexts = Array.from(textareas).map(t => t.value).filter(text => text.trim() !== "");
+
+            // Complexity Gate Check on Client-Side as well
+            if (unstructuredTexts.length > 10) {
+                document.getElementById('complexityModal').classList.remove('hidden');
+                return;
+            }
 
             const payload = {
                 files_count: unstructuredTexts.length,
@@ -109,49 +183,69 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                if (!response.ok) throw new Error('Data processing engine execution failure.');
+                
+                if (response.status === 422) {
+                    document.getElementById('complexityModal').classList.remove('hidden');
+                    return;
+                }
+                if (!response.ok) throw new Error('System execution failure.');
+                
                 const data = await response.json();
-                renderTimeline(data.timeline);
+                renderTelemetry(data);
+                renderGrid(data.timeline);
             } catch (error) {
                 alert(error.message);
             }
         });
 
-        function renderTimeline(events) {
+        function renderTelemetry(data) {
+            const block = document.getElementById('telemetryBlock');
+            block.classList.remove('hidden');
+            document.getElementById('telemetryCount').innerText = data.total_dates_extracted;
+            
+            const omittedContainer = document.getElementById('telemetryOmitted');
+            if(data.omitted_non_compliant_dates && data.omitted_non_compliant_dates.length > 0) {
+                omittedContainer.innerHTML = data.omitted_non_compliant_dates.map(d => `• ${d}`).join('<br>');
+                omittedContainer.className = "text-xs text-yellow-500 font-mono mt-1 max-h-12 overflow-y-auto";
+            } else {
+                omittedContainer.innerText = "None detected";
+                omittedContainer.className = "text-xs text-emerald-400 font-mono mt-1 max-h-12 overflow-y-auto";
+            }
+        }
+
+        function renderGrid(events) {
             const container = document.getElementById('resultsContainer');
-            const list = document.getElementById('timelineList');
-            list.innerHTML = ''; 
+            const tbody = document.getElementById('ledgerGridBody');
+            tbody.innerHTML = ''; 
             container.classList.remove('hidden');
 
             events.forEach(event => {
                 const isFlagged = event.audit_flag;
-                const glassCardStyle = isFlagged 
-                    ? 'border-red-500/30 bg-gradient-to-br from-red-950/40 to-slate-900/90 shadow-red-950/20' 
-                    : 'border-slate-800 bg-slate-900/60 shadow-black/40';
+                // Highlight row states if exceeding constraints
+                const rowClass = isFlagged 
+                    ? 'bg-red-950/20 text-red-200 font-bold border-l-2 border-red-500' 
+                    : 'hover:bg-slate-900/40';
                 
-                const badge = isFlagged 
-                    ? '<span class="text-xs px-2.5 py-1 rounded-md font-bold uppercase tracking-wider bg-red-500/10 text-red-400 border border-red-500/20">⚠️ Audit Flag</span>' 
-                    : '<span class="text-xs px-2.5 py-1 rounded-md font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">✓ Verified</span>';
+                const amountStyle = isFlagged ? 'text-red-400 font-black' : 'text-slate-100 font-medium';
 
-                const item = `
-                    <div class="relative pl-8 group">
-                        <span class="absolute -left-[7px] top-2 flex h-3 w-3 rounded-full bg-slate-800 group-hover:bg-cyan-400 ring-4 ring-slate-950 transition duration-300"></span>
-                        <div class="border rounded-xl p-5 shadow-xl transition-all duration-300 hover:translate-x-1 ${glassCardStyle}">
-                            <div class="flex items-center justify-between gap-4 mb-3">
-                                <span class="text-sm font-bold tracking-wide text-cyan-400">${event.date}</span>
-                                ${badge}
-                            </div>
-                            <p class="text-slate-200 text-sm font-medium mb-3">${event.description}</p>
-                            <div class="text-xs text-slate-500 flex justify-between items-center pt-2 border-t border-slate-800/60">
-                                <span>Context Structure: <span class="text-slate-400 italic">${event.date_type}</span></span>
-                                <span class="text-base font-black text-slate-100">$${event.amount.toLocaleString()}</span>
-                            </div>
-                        </div>
-                    </div>
+                const row = `
+                    <tr class="${rowClass}">
+                        <td class="py-3 px-2 font-mono text-cyan-400">${event.date} <span class="text-[10px] text-slate-500 block">(${event.date_type})</span></td>
+                        <td class="py-3 px-2 italic text-slate-400">${event.source_file}</td>
+                        <td class="py-3 px-2 font-medium">${event.description}</td>
+                        <td class="py-3 px-2 ${amountStyle}">$${event.amount.toLocaleString()}</td>
+                        <td class="py-3 px-2">
+                            <input type="text" value="${event.custom_comment}" class="bg-slate-900 border border-slate-800 text-[11px] rounded p-1 text-slate-300 w-full focus:border-cyan-500 outline-none">
+                        </td>
+                    </tr>
                 `;
-                list.innerHTML += item;
+                tbody.innerHTML += row;
             });
         }
+
+        document.getElementById('closeModalBtn').addEventListener('click', () => {
+            document.getElementById('complexityModal').classList.add('hidden');
+        });
     </script>
 </body>
 </html>
